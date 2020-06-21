@@ -12,21 +12,23 @@
             let body = new FormData();
             body.append('example', formElem.files[0]);
             body.append('sentence', document.getElementById("sentence").value);
+            body.append('translation', document.getElementById("sentence").value);
             let response = await fetch('http://localhost:3000/sentence', {
                 method: 'POST',
                 body: body,
             });
 
-            let result = await response.json();
+            // let result = await response.json();
 
-            alert(result.message);
+            // alert(result.message);
         }
     };
 </script>
 
 <body>
     <form id="formElem" enctype="multipart/form-data">
-        <input id="sentence" type="text" name="sentence" value="John">
+        <div>фраза:</div> <input id="sentence" type="text" name="sentence" value="">
+        <div>перевод: </div><input id="translation" type="text" name="translation" value="">
         <input id="example" type="file" name="example">
         <input type="submit">
     </form>
