@@ -6,17 +6,33 @@
     let sentences = [];
     let currentElement = 1;
     const baseUrl = "http://localhost:3000/";
+    let helpIsUsed = false;
+
+    function help(element) {
+        let currentSentence = sentences[currentElement - 1].sentence;
+
+        let i = 0;
+        while (currentSentence[i] === document.getElementById("sentence").value[i]) {
+            if (i === currentSentence.length) {
+                break;
+            }
+            i++;
+        }
+        document.getElementById("sentence").value = currentSentence.slice(0, i + 1);
+        document.getElementById("sentence").oninput(document.getElementById("sentence"));
+        console.log(currentSentence);
+    }
     async function get() {
         let url = baseUrl + "training/" + document.getElementById("countOfSentences").value;
         document.getElementById("sentence").disabled = false;
-      
+
         fetch(url).then(response =>
             response.json()
         ).then(response => {
             sentences = response;
             currentElement = 1;
             document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
-            document.getElementById("audio").src = baseUrl + "example/" + sentences[currentElement-1].fileName;
+            document.getElementById("audio").src = baseUrl + "example/" + sentences[currentElement - 1].fileName;
         }).
             catch(error => {
                 document.getElementById("error").innerHTML = error;
@@ -27,15 +43,26 @@
         let sentence = sentences[currentElement - 1];
         if (element.value === sentence.sentence) {
             currentElement += 1;
-            document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
-            let url = baseUrl + "progress/" + sentence.id;
-            element.value = "";
-            fetch(url, { method: "POST" }).catch(error => alert(error));
+            element.disabled = true;
+            setTimeout(() => {
+                element.disabled = false;
+                document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
+                element.value = "";
+                let url = null;
+                if (helpIsUsed) {
+                    url = baseUrl + "progress/" + sentence.id;
+                } else {
+                    url = baseUrl + "regress/" + sentence.id;
+                }
+                fetch(url, { method: "POST" }).catch(error => alert(error));
+                if (currentElement > sentences.length) {
+                    document.getElementById("currentElement").innerHTML = "фразы закончились";
+                    element.disabled = true;
+                }
+            }, 1000);
+
         }
-        if(currentElement > sentences.length){
-            document.getElementById("currentElement").innerHTML = "фразы закончились";
-            element.disabled=true;
-        }
+
     }
 </script>
 
@@ -46,7 +73,10 @@
     <input type="submit" value="получить" onclick=get();></input>
     <br>
     <input id="sentence" disabled="disabled" type="text" oninput=typeText(this);></input>
-    <audio id="audio" controls></audio>
+    <input type="submit" value="помощь" onclick=help(this);></input>
+    <div>
+        <audio id="audio" controls></audio>
+    </div>
     <div id="currentElement"></div>
 
 </body>
