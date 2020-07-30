@@ -44,12 +44,14 @@
         if (element.value === sentence.sentence) {
             currentElement += 1;
             element.disabled = true;
+            document.getElementById("sentence").style.backgroundColor = "yellow";
             setTimeout(() => {
+                document.getElementById("sentence").style.backgroundColor = "white";
                 element.disabled = false;
                 document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
                 element.value = "";
                 let url = null;
-                if (helpIsUsed) {
+                if (!helpIsUsed) {
                     url = baseUrl + "progress/" + sentence.id;
                 } else {
                     url = baseUrl + "regress/" + sentence.id;
