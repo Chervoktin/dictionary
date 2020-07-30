@@ -10,7 +10,7 @@
 
     function help(element) {
         let currentSentence = sentences[currentElement - 1].sentence;
-
+        helpIsUsed = true;
         let i = 0;
         while (currentSentence[i] === document.getElementById("sentence").value[i]) {
             if (i === currentSentence.length) {
@@ -44,7 +44,11 @@
         if (element.value === sentence.sentence) {
             currentElement += 1;
             element.disabled = true;
-            document.getElementById("sentence").style.backgroundColor = "yellow";
+            if(helpIsUsed){
+                document.getElementById("sentence").style.backgroundColor = "red";
+            }else{
+                document.getElementById("sentence").style.backgroundColor = "green";
+            }
             setTimeout(() => {
                 document.getElementById("sentence").style.backgroundColor = "white";
                 element.disabled = false;
@@ -56,6 +60,7 @@
                 } else {
                     url = baseUrl + "regress/" + sentence.id;
                 }
+                helpIsUsed = false;
                 fetch(url, { method: "POST" }).catch(error => alert(error));
                 if (currentElement > sentences.length) {
                     document.getElementById("currentElement").innerHTML = "фразы закончились";
