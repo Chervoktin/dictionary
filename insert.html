@@ -12,15 +12,21 @@
             let body = new FormData();
             body.append('example', formElem.files[0]);
             body.append('sentence', document.getElementById("sentence").value);
-            body.append('translation', document.getElementById("sentence").value);
+            body.append('translation', document.getElementById("translation").value);
             let response = await fetch('http://localhost:3000/sentence', {
                 method: 'POST',
                 body: body,
+            }).then(()=>{
+                document.getElementById("sentence").value = "";
+                document.getElementById("example").value = "";
+                document.getElementById("translation").value = "";
+                document.getElementById("result").innerHTML = "успешно";
+            })
+            .catch((e)=>{
+               console.log(e);
+               document.getElementById("result").innerHTML = "ошибка";
             });
-
-            // let result = await response.json();
-
-            // alert(result.message);
+        
         }
     };
 </script>
@@ -32,6 +38,9 @@
         <input id="example" type="file" name="example">
         <input type="submit">
     </form>
+    <div id="result">
+
+    </div>
 </body>
 
 </html>
