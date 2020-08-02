@@ -12,10 +12,13 @@
         let currentSentence = sentences[currentElement - 1].sentence;
         helpIsUsed = true;
         let i = 0;
-        while (currentSentence[i] === document.getElementById("sentence").value[i]) {
+        while (currentSentence.toLowerCase()[i] === document.getElementById("sentence").value.toLowerCase()[i]) {
             if (i === currentSentence.length) {
                 break;
             }
+            i++;
+        }
+        if(currentSentence[i] === ' '){
             i++;
         }
         document.getElementById("sentence").value = currentSentence.slice(0, i + 1);
@@ -41,7 +44,8 @@
 
     function typeText(element) {
         let sentence = sentences[currentElement - 1];
-        if (element.value === sentence.sentence) {
+        if (element.value.toLowerCase() === sentence.sentence.toLowerCase()) {
+            console.log("asdasda");
             currentElement += 1;
             element.disabled = true;
             if(helpIsUsed){
@@ -52,7 +56,7 @@
             setTimeout(() => {
                 document.getElementById("sentence").style.backgroundColor = "white";
                 element.disabled = false;
-                document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
+                
                 element.value = "";
                 let url = null;
                 if (!helpIsUsed) {
@@ -61,10 +65,13 @@
                     url = baseUrl + "regress/" + sentence.id;
                 }
                 helpIsUsed = false;
-                fetch(url, { method: "POST" }).catch(error => alert(error));
+                fetch(url, { method: "POST" }).catch(error => alert(error)); 
                 if (currentElement > sentences.length) {
                     document.getElementById("currentElement").innerHTML = "фразы закончились";
                     element.disabled = true;
+                }else{
+                    document.getElementById("audio").src = baseUrl + "example/" + sentences[currentElement - 1].fileName;
+                    document.getElementById("currentElement").innerHTML = currentElement + "/" + sentences.length;
                 }
             }, 1000);
 
@@ -79,10 +86,10 @@
     <input id="countOfSentences" type="number"></input>
     <input type="submit" value="получить" onclick=get();></input>
     <br>
-    <input id="sentence" disabled="disabled" type="text" oninput=typeText(this);></input>
+    <textarea id="sentence" disabled="disabled" type="text" size="150" style="height:400px; width: 100%; font-size: 50px" oninput=typeText(this);></textarea>
     <input type="submit" value="помощь" onclick=help(this);></input>
     <div>
-        <audio id="audio" controls></audio>
+        <video id="audio" controls></video>
     </div>
     <div id="currentElement"></div>
 
