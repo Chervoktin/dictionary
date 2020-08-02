@@ -1,0 +1,37 @@
+<html>
+<title>
+    Словарь
+</title>
+<script>
+    window.onload = async function () {
+
+        let response = await fetch('http://localhost:3000/word/', {
+            method: 'GET',
+        }).catch((e) => {
+            console.log(e);
+        });
+        let json = await response.json();
+        let tbody = document.getElementById("words").getElementsByTagName("tbody")[0];
+        json.forEach(element => {
+            console.log(element.word);
+            let row = document.createElement("TR");
+            let td1 = document.createElement("TD");
+            td1.appendChild(document.createTextNode(element.word));
+            row.appendChild(td1);
+            let td2 = document.createElement("TD");
+            td2.appendChild(document.createTextNode(element.scores));
+            tbody.appendChild(row);
+            row.appendChild(td2);
+        });
+    }
+
+</script>
+
+<body>
+    <table id="words" cellspacing="0" border="1">
+        <tbody>
+        </tbody>
+    </table>
+</body>
+
+</html>
